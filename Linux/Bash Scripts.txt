@@ -1,0 +1,83 @@
+ssh RedAdmin@52.156.166.32 - ssh into Jump-Box-Provisioner
+
+apt-get update
+
+sudo apt-get install docker.io - to install docker
+
+sudo docker pull cyberxsecurity/ubuntu.bionic - to download the ubuntu container with the bionic tag 
+
+sudo docker run -ti cyberxsecurity/ubuntu.bionic bash - to run this container in interactive mode and run "bash" in it
+
+sudo docker pull cyberxsecurity/ansible - to download the ansible container
+
+sudo docker run -ti cyberxsecurity/ansible:latest bash - to run this container in interactive mode and run "bash" in it
+
+sudo docker ps -a  - to list the ansible and bionic containers
+
+sudo docker start loving_hodgkin - to start the ansible container
+
+sudo docker attach loving_hodgkin - to be inside the "loving_hodgkin" container
+
+Once inside the container, run 
+ssh-keygen - to generate a ssh key for Web-1 and Web-2 VM's.
+
+ssh RedAdmin@10.0.0.5 - to ssh into Web-1 VM from Jump-Box.
+
+ssh RedAdmin@10.0.0.6 - to ssh into Web-2 VM from Jump-Box.
+
+nano /etc/ansible/ansible.cfg - to configure ansible to change remote_user to "RedAdmin"
+
+nano /etc/ansible/hosts - configure ansible to add [webservers] for Web-1 and Web-2 VM's.
+Also, add the version of python to be used by ansible in the "hosts" file - 
+[webservers]
+10.0.0.5 ansible_python_interpreter=/usr/bin/python3
+10.0.0.6 ansible_python_interpreter=/usr/bin/python3
+
+sudo docker ps -a
+sudo docker start loving_hodgkin 
+sudo docker attach loving_hodgkin
+
+Create pentest.yml - to uninstall apache, intsall docker, install python3-pip, install python docker and donload and launch a docker container(dvwa) and enable docker service.
+Run pentest.yml
+Run sudo docker ps -a - this will show the dvwa container running now.
+
+curl localhost/setup.php - to check if dvwa is running properly.
+
+Elk installation
+
+cat ~/.ssh.pub_rsa - to get ssh key for the elk server.
+
+Modify  /etc/ansible/hosts for elk server and to force ansible to use python3
+[elk]
+10.1.0.4 ansible_python_interpreter=/usr/bin/python3
+
+Create install-elk.yml in /etc/ansible/roles/ - This is to configure elk VM with Docker,increase virtual memory , download and launch a docker elk container
+
+ssh sysadmin@10.1.0.4 - to see if we can connect to elk server.
+
+ansible-playbook install-elk.yml - makes a new elk container 
+
+ssh sysadmin@10.1.0.4 - ssh to sysadmin at elk server
+
+Filebeat setup
+
+ssh to Jump Box - 
+ssh RedAdmin@52.156.166.32
+
+start and attach to ansible container - 
+sudo docker start loving_hodgkin 
+sudo docker attach loving_hodgkin
+
+Goto /etc/ansible/roles and make a directory called "files" to store the configuration files for Web-1 and Web-2
+
+Create a dummy VM and copy ssh public key into it.
+
+Create filebeat-config.yml in etc/ansible/roles/files/
+
+Create filebeat-install.yml - 
+nano filebeat-install.yml
+
+Run filebeat-install.yml - 
+ansible-playbook roles/filebeat-install.yml
+
+
